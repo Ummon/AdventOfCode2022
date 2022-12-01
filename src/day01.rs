@@ -1,4 +1,6 @@
-use std::{iter::Iterator, io::BufRead, ops::AddAssign};
+use std::{iter::Iterator, io::BufRead, ops::AddAssign, cmp::Reverse};
+
+use itertools::*;
 
 pub fn read_calories<R>(reader: R) -> Vec<i64>
 where
@@ -22,9 +24,7 @@ pub fn get_most_calories(calories: &[i64]) -> i64 {
 }
 
 pub fn get_sum_most_three_calories(calories: &[i64]) -> i64 {
-    let mut calories = Vec::from(calories);
-    calories.sort_by(|a, b| b.cmp(a));
-    calories.iter().take(3).sum()
+    calories.iter().map(Reverse).k_smallest(3).map(|n| n.0).sum()
 }
 
 
