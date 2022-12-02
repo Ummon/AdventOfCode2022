@@ -24,9 +24,8 @@ pub fn get_most_calories(calories: &[i64]) -> i64 {
 }
 
 pub fn get_sum_most_three_calories(calories: &[i64]) -> i64 {
-    calories.iter().map(Reverse).k_smallest(3).map(|n| n.0).sum()
+    calories.iter().map(Reverse).k_smallest(3).fold(0, |s, v| s + v.0)
 }
-
 
 #[cfg(test)]
 mod tests {

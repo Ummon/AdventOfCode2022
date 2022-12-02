@@ -1,13 +1,26 @@
-use std::{env, fs, io, time::Instant};
+use std::{env, fs, time::Instant, io::{BufReader, Seek, SeekFrom}};
 
 mod common;
 mod day01;
+mod day02;
+mod day03;
 
 fn day01() -> String {
-    //let report = common::read_list_of_numbers("data/day01.input", "\n");
     let f = fs::File::open("data/day01.input").unwrap();
-    let calories = day01::read_calories(std::io::BufReader::new(f));
+    let calories = day01::read_calories(BufReader::new(f));
     format!("part1: {}, part2: {}", day01::get_most_calories(&calories), day01::get_sum_most_three_calories(&calories))
+}
+
+fn day02() -> String {
+    let mut f = fs::File::open("data/day02.input").unwrap();
+    let shapes = day02::read_shapes(BufReader::new(f.try_clone().unwrap()));
+    let _ = f.seek(SeekFrom::Start(0));
+    let shapes_2 = day02::read_shapes_2(BufReader::new(f));
+    format!("part1: {}, part2: {}", day02::get_score(&shapes), day02::get_score(&shapes_2))
+}
+
+fn day03() -> String {
+    format!("part1: {}, part2: {}", 0, 0)
 }
 
 fn format_micros(t: u128) -> String {
@@ -30,6 +43,8 @@ fn main() {
 
     let days: Vec<fn() -> String> = vec!(
         day01,
+        day02,
+        day03,
     );
 
     let args: Vec<String> = env::args().skip(1).collect();
