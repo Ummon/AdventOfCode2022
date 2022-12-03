@@ -20,11 +20,8 @@ fn day02() -> String {
 }
 
 fn day03() -> String {
-    let mut f = fs::File::open("data/day03.input").unwrap();
-    let part1 = day03::priority_sum(BufReader::new(f.try_clone().unwrap()));
-    let _ = f.seek(SeekFrom::Start(0));
-    let part2 = day03::badge_sum(BufReader::new(f));
-    format!("part1: {}, part2: {}", part1, part2)
+    let rucksacks = day03::parse(&fs::read_to_string("data/day03.input").unwrap());
+    format!("part1: {}, part2: {}", day03::priority_sum(&rucksacks), day03::badge_sum(&rucksacks))
 }
 
 fn format_micros(t: u128) -> String {

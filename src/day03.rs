@@ -2,24 +2,34 @@ use std::io::BufRead;
 
 use itertools::Itertools;
 
-pub fn priority_sum<R>(reader: R) -> i32
-where
-    R: BufRead
-{
+pub fn parse(s: &str) -> Vec<Vec<u8>> {
+    s.lines()
+        .map(|l| {
+            l.as_bytes().into_iter().map(letter_to_priority).collect_vec()
+        }).collect()
+}
+
+fn letter_to_priority(v: &u8) -> u8 {
+    if *v >= 97 { // >= 'a'
+        v - 96
+    } else { // < 'a'
+        v - 38
+    }
+}
+
+pub fn priority_sum(rucksacks: &[Vec<u8>]) -> i32 {
     let mut sum = 0;
-    let mut item_count = [0i32; 52];
-    for l in reader.lines() {
+    let mut item_count = [0u8; 52];
+    for r in rucksacks {
         item_count.fill(0);
-        let l = l.unwrap();
-        let items = l.as_bytes();
-        for i in 0..items.len() / 2 {
-            let v = letter_to_priority(items[i]);
-            item_count[v as usize - 1] += 1;
+
+        for i in 0..r.len() / 2 {
+            item_count[r[i] as usize - 1] += 1;
         }
-        for i in items.len() / 2..items.len() {
-            let v = letter_to_priority(items[i]);
-            if item_count[v as usize - 1] > 0 {
-                sum += v as i32;
+
+        for i in r.len() / 2..r.len() {
+            if item_count[r[i] as usize - 1] > 0 {
+                sum += r[i] as i32;
                 break;
             }
         }
@@ -27,35 +37,26 @@ where
     sum
 }
 
-pub fn badge_sum<R>(reader: R) -> i32
-where
-    R: BufRead
-{
+pub fn badge_sum(rucksacks: &[Vec<u8>]) -> i32 {
     let mut sum = 0;
     let mut item_set = [0u8; 52];
-    for group in reader.lines().chunks(3).into_iter() {
+    for group in rucksacks.chunks(3).into_iter() {
         item_set.fill(0);
-        for (i, rucksack) in group.enumerate() {
-            let items = rucksack.unwrap();
-            for b in items.as_bytes().into_iter() {
-                let v = letter_to_priority(*b);
-                if i == 2 && item_set[v as usize - 1] == 3 {
-                    sum += v as i32;
-                    break;
-                }
-                item_set[v as usize - 1] |= 1 << i;
+
+        for i in 0..2 {
+            for b in group[i].iter() {
+                item_set[*b as usize - 1] |= 1 << i;
+            }
+        }
+
+        for b in group[2].iter() {
+            if item_set[*b as usize - 1] == 3 {
+                sum += *b as i32;
+                break;
             }
         }
     }
     sum
-}
-
-fn letter_to_priority(v: u8) -> u8 {
-    if v >= 97 { // >= 'a'
-        v - 96
-    } else { // < 'a'
-        v - 38
-    }
 }
 
 #[cfg(test)]
@@ -72,7 +73,7 @@ wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
 ttgJtRGJQctTZtZT
 CrZsJsPPZsGzwwsLwLmpwMDw";
 
-        assert_eq!(priority_sum(rucksacks.as_bytes()), 157);
+        assert_eq!(priority_sum(&parse(rucksacks)), 157);
     }
 
     #[test]
@@ -85,6 +86,6 @@ wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
 ttgJtRGJQctTZtZT
 CrZsJsPPZsGzwwsLwLmpwMDw";
 
-        assert_eq!(badge_sum(rucksacks.as_bytes()), 70);
+        assert_eq!(badge_sum(&parse(rucksacks)), 70);
     }
 }
