@@ -1,11 +1,7 @@
-use std::io::BufRead;
-
-use itertools::Itertools;
-
 pub fn parse(s: &str) -> Vec<Vec<u8>> {
     s.lines()
         .map(|l| {
-            l.as_bytes().into_iter().map(letter_to_priority).collect_vec()
+            l.as_bytes().into_iter().map(letter_to_priority).collect()
         }).collect()
 }
 
