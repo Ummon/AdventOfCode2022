@@ -4,6 +4,7 @@ mod common;
 mod day01;
 mod day02;
 mod day03;
+mod day04;
 
 fn day01() -> String {
     let f = fs::File::open("data/day01.input").unwrap();
@@ -22,6 +23,11 @@ fn day02() -> String {
 fn day03() -> String {
     let rucksacks = day03::parse(&fs::read_to_string("data/day03.input").unwrap());
     format!("part1: {}, part2: {}", day03::priority_sum(&rucksacks), day03::badge_sum(&rucksacks))
+}
+
+fn day04() -> String {
+    let pairs = day04::parse(&fs::read_to_string("data/day04.input").unwrap());
+    format!("part1: {}, part2: {}", day04::number_fully_contain(&pairs), day04::number_overlaps(&pairs))
 }
 
 fn format_micros(t: u128) -> String {
@@ -46,6 +52,7 @@ fn main() {
         day01,
         day02,
         day03,
+        day04,
     );
 
     let args: Vec<String> = env::args().skip(1).collect();
