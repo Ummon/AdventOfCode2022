@@ -5,6 +5,7 @@ mod day01;
 mod day02;
 mod day03;
 mod day04;
+mod day05;
 
 fn day01() -> String {
     let f = fs::File::open("data/day01.input").unwrap();
@@ -30,6 +31,14 @@ fn day04() -> String {
     format!("part1: {}, part2: {}", day04::number_fully_contain(&pairs), day04::number_overlaps(&pairs))
 }
 
+fn day05() -> String {
+    let (mut stacks, moves) = day05::parse(&fs::read_to_string("data/day05.input").unwrap());
+    let mut stacks2 = stacks.clone();
+    day05::apply_moves_by_crate_mover_9000(&mut stacks, &moves);
+    day05::apply_moves_by_crate_mover_9001(&mut stacks2, &moves);
+    format!("part1: {}, part2: {}", day05::get_top_as_string(&stacks), day05::get_top_as_string(&stacks2))
+}
+
 fn format_micros(t: u128) -> String {
     if t < 10_000 {
         format!("{} μs", t)
@@ -53,6 +62,7 @@ fn main() {
         day02,
         day03,
         day04,
+        day05,
     );
 
     let args: Vec<String> = env::args().skip(1).collect();
