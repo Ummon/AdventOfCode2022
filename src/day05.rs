@@ -64,13 +64,7 @@ pub fn apply_moves_by_crate_mover_9001(stacks: &mut Stacks, moves: &[Move]) {
 }
 
 pub fn get_top_as_string(stacks: &Stacks) -> String {
-    let mut result = String::new();
-    for stack in stacks {
-        if let Some(c) = stack.back() {
-            result.push(*c);
-        }
-    }
-    result
+    stacks.iter().map_while(VecDeque::back).collect()
 }
 
 #[cfg(test)]
