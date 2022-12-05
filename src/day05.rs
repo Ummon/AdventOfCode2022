@@ -44,21 +44,22 @@ pub fn parse(s: &str) -> (Stacks, Vec<Move>) {
 }
 
 pub fn apply_moves_by_crate_mover_9000(stacks: &mut Stacks, moves: &[Move]) {
-    for m in moves {
-        for _ in 0..m.n {
-            if let Some(c) = stacks[m.from].pop_back() {
-                stacks[m.to].push_back(c);
-            } else {
-                break;
-            }
-        }
-    }
+    apply_moves(stacks, moves, true);
 }
 
 pub fn apply_moves_by_crate_mover_9001(stacks: &mut Stacks, moves: &[Move]) {
+    apply_moves(stacks, moves, false);
+}
+
+fn apply_moves(stacks: &mut Stacks, moves: &[Move], reverse_stack: bool) {
     for m in moves {
         let from = stacks.get_mut(m.from).unwrap();
         let mut to_move = from.split_off(from.len() - m.n);
+
+        if reverse_stack {
+            to_move.make_contiguous().reverse();
+        }
+
         stacks[m.to].append(&mut to_move);
     }
 }
