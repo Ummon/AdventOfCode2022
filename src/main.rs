@@ -6,6 +6,7 @@ mod day02;
 mod day03;
 mod day04;
 mod day05;
+mod day06;
 
 fn day01() -> String {
     let f = fs::File::open("data/day01.input").unwrap();
@@ -39,6 +40,11 @@ fn day05() -> String {
     format!("part1: {}, part2: {}", day05::get_top_as_string(&stacks), day05::get_top_as_string(&stacks2))
 }
 
+fn day06() -> String {
+    let signals = fs::read_to_string("data/day06.input").unwrap();
+    format!("part1: {}, part2: {}", day06::first_marker_pos(&signals, 4), day06::first_marker_pos(&signals, 14))
+}
+
 fn format_micros(t: u128) -> String {
     if t < 10_000 {
         format!("{} μs", t)
@@ -63,6 +69,7 @@ fn main() {
         day03,
         day04,
         day05,
+        day06,
     );
 
     let args: Vec<String> = env::args().skip(1).collect();
