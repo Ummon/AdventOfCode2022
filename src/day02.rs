@@ -52,7 +52,7 @@ where
         let s1: Shape = Shape::parse(l[0]);
         let s2 = match l[1] {
             "X" => match s1 { Shape::Rock => Shape::Scissors, Shape::Paper => Shape::Rock, Shape::Scissors => Shape::Paper, }, // Need to lose.
-            "Z" => match s1 { Shape::Rock => Shape::Paper, Shape::Paper => Shape::Scissors, Shape::Scissors => Shape::Rock, }, // Need to win
+            "Z" => match s1 { Shape::Rock => Shape::Paper, Shape::Paper => Shape::Scissors, Shape::Scissors => Shape::Rock, }, // Need to win.
             _ => s1, // Draw.
         };
 

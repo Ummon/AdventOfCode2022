@@ -7,6 +7,7 @@ mod day03;
 mod day04;
 mod day05;
 mod day06;
+mod day07;
 
 fn day01() -> String {
     let f = fs::File::open("data/day01.input").unwrap();
@@ -45,6 +46,24 @@ fn day06() -> String {
     format!("part1: {}, part2: {}", day06::first_marker_pos(&signals, 4), day06::first_marker_pos(&signals, 14))
 }
 
+fn day07() -> String {
+    let root = day07::parse(&fs::read_to_string("data/day07.input").unwrap());
+
+    let (root_size, sum_part1 ) = {
+        let mut sizes: Vec<i64> = Vec::new();
+        (root.dir_sizes(|size| size <= 100_000, &mut sizes), sizes.iter().sum::<i64>())
+    };
+
+    let min_part2 = {
+        let to_free = root_size - (70_000_000 - 30_000_000);
+        let mut sizes: Vec<i64> = Vec::new();
+        root.dir_sizes(|size| size >= to_free, &mut sizes);
+        *sizes.iter().min().unwrap()
+    };
+
+    format!("part1: {}, part2: {}", sum_part1, min_part2)
+}
+
 fn format_micros(t: u128) -> String {
     if t < 10_000 {
         format!("{} μs", t)
@@ -70,6 +89,7 @@ fn main() {
         day04,
         day05,
         day06,
+        day07,
     );
 
     let args: Vec<String> = env::args().skip(1).collect();

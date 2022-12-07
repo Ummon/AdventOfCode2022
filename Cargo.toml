@@ -8,10 +8,7 @@ edition = "2021"
 
 [dependencies]
 itertools = "0.10"
-threadpool = "1.8"
 regex = "1"
-num = "0.4"
-num_enum = "0.5"
 
 [profile.release]
 opt-level = 3
