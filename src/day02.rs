@@ -69,21 +69,18 @@ pub fn get_score(shapes: &[(Shape, Shape)]) -> i32 {
 mod tests {
     use super::*;
 
+    static STRATEGY_GUIDE: &str =
+        "A Y
+         B X
+         C Z";
+
     #[test]
     fn part1() {
-        let stategy_guide =
-            "A Y
-             B X
-             C Z";
-        assert_eq!(get_score(&read_shapes(stategy_guide.as_bytes())), 15);
+        assert_eq!(get_score(&read_shapes(STRATEGY_GUIDE.as_bytes())), 15);
     }
 
     #[test]
     fn part2() {
-        let stategy_guide =
-            "A Y
-             B X
-             C Z";
-        assert_eq!(get_score(&read_shapes_2(stategy_guide.as_bytes())), 12);
+        assert_eq!(get_score(&read_shapes_2(STRATEGY_GUIDE.as_bytes())), 12);
     }
 }

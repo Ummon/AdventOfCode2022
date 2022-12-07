@@ -28,27 +28,20 @@ pub fn number_overlaps(pairs: &[Pair]) -> i32 {
 mod tests {
     use super::*;
 
-    #[test]
-    fn part1() {
-        let pairs ="2-4,6-8
+    static PAIRS: &str ="2-4,6-8
 2-3,4-5
 5-7,7-9
 2-8,3-7
 6-6,4-6
 2-6,4-8";
 
-        assert_eq!(number_fully_contain(&parse(pairs)), 2);
+    #[test]
+    fn part1() {
+        assert_eq!(number_fully_contain(&parse(PAIRS)), 2);
     }
 
     #[test]
     fn part2() {
-        let pairs ="2-4,6-8
-2-3,4-5
-5-7,7-9
-2-8,3-7
-6-6,4-6
-2-6,4-8";
-
-        assert_eq!(number_overlaps(&parse(pairs)), 4);
+        assert_eq!(number_overlaps(&parse(PAIRS)), 4);
     }
 }

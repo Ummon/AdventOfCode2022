@@ -31,44 +31,30 @@ pub fn get_sum_most_three_calories(calories: &[i64]) -> i64 {
 mod tests {
     use super::*;
 
+    static CALORIES: &str =
+        "1000
+        2000
+        3000
+
+        4000
+
+        5000
+        6000
+
+        7000
+        8000
+        9000
+
+        10000";
+
     #[test]
     fn part1() {
-        let calories =
-            "1000
-             2000
-             3000
-
-             4000
-
-             5000
-             6000
-
-             7000
-             8000
-             9000
-
-             10000";
-        assert_eq!(get_most_calories(&read_calories(calories.as_bytes())), 24000);
+        assert_eq!(get_most_calories(&read_calories(CALORIES.as_bytes())), 24000);
     }
 
     #[test]
     fn part2() {
-        let calories =
-            "1000
-             2000
-             3000
-
-             4000
-
-             5000
-             6000
-
-             7000
-             8000
-             9000
-
-             10000";
-        assert_eq!(get_sum_most_three_calories(&read_calories(calories.as_bytes())), 45000);
+        assert_eq!(get_sum_most_three_calories(&read_calories(CALORIES.as_bytes())), 45000);
     }
 
 }

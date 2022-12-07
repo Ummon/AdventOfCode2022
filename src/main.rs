@@ -49,7 +49,7 @@ fn day06() -> String {
 fn day07() -> String {
     let root = day07::parse(&fs::read_to_string("data/day07.input").unwrap());
 
-    let (root_size, sum_part1 ) = {
+    let (root_size, sum_part1, ) = {
         let mut sizes: Vec<i64> = Vec::new();
         (root.dir_sizes(|size| size <= 100_000, &mut sizes), sizes.iter().sum::<i64>())
     };

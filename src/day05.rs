@@ -72,9 +72,7 @@ pub fn get_top_as_string(stacks: &Stacks) -> String {
 mod tests {
     use super::*;
 
-    #[test]
-    fn part1() {
-        let stacks_and_moves ="    [D]
+    static STACKS_AND_MOVES: &str ="    [D]
 [N] [C]
 [Z] [M] [P]
  1   2   3
@@ -83,23 +81,17 @@ move 1 from 2 to 1
 move 3 from 1 to 3
 move 2 from 2 to 1
 move 1 from 1 to 2";
-        let (mut stacks, moves) = parse(stacks_and_moves);
+
+    #[test]
+    fn part1() {
+        let (mut stacks, moves) = parse(STACKS_AND_MOVES);
         apply_moves_by_crate_mover_9000(&mut stacks, &moves);
         assert_eq!(get_top_as_string(&stacks), "CMZ");
     }
 
     #[test]
     fn part2() {
-        let stacks_and_moves ="    [D]
-[N] [C]
-[Z] [M] [P]
- 1   2   3
-
-move 1 from 2 to 1
-move 3 from 1 to 3
-move 2 from 2 to 1
-move 1 from 1 to 2";
-        let (mut stacks, moves) = parse(stacks_and_moves);
+        let (mut stacks, moves) = parse(STACKS_AND_MOVES);
         apply_moves_by_crate_mover_9001(&mut stacks, &moves);
         assert_eq!(get_top_as_string(&stacks), "MCD");
     }

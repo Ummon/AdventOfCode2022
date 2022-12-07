@@ -56,9 +56,7 @@ pub fn parse(input: &str) -> Dir {
 mod tests {
     use super::*;
 
-    #[test]
-    fn part1() {
-        let commands = "$ cd /
+    static INPUT: &str = "$ cd /
 $ ls
 dir a
 14848514 b.txt
@@ -81,7 +79,10 @@ $ ls
 8033020 d.log
 5626152 d.ext
 7214296 k";
-        let root = parse(commands);
+
+    #[test]
+    fn part1() {
+        let root = parse(INPUT);
         let mut sizes: Vec<i64> = Vec::new();
         root.dir_sizes(|size| size <= 100_000, &mut sizes);
         assert_eq!(sizes.iter().sum::<i64>(), 95_437);
@@ -89,37 +90,11 @@ $ ls
 
     #[test]
     fn part2() {
-        let commands = "$ cd /
-$ ls
-dir a
-14848514 b.txt
-8504156 c.dat
-dir d
-$ cd a
-$ ls
-dir e
-29116 f
-2557 g
-62596 h.lst
-$ cd e
-$ ls
-584 i
-$ cd ..
-$ cd ..
-$ cd d
-$ ls
-4060174 j
-8033020 d.log
-5626152 d.ext
-7214296 k";
-        let root = parse(commands);
-
+        let root = parse(INPUT);
         let root_size = root.dir_sizes(|size| size <= 100_000, &mut Vec::new());
-
-        let required = root_size - (70_000_000 - 30_000_000);
+        let to_free = root_size - (70_000_000 - 30_000_000);
         let mut sizes: Vec<i64> = Vec::new();
-        root.dir_sizes(|size| size >= required, &mut sizes);
-
-        assert_eq!(*sizes.iter().min().unwrap(), 24933642);
+        root.dir_sizes(|size| size >= to_free, &mut sizes);
+        assert_eq!(*sizes.iter().min().unwrap(), 2_493_3642);
     }
 }

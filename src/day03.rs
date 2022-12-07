@@ -59,9 +59,7 @@ pub fn badge_sum(rucksacks: &[Vec<u8>]) -> i32 {
 mod tests {
     use super::*;
 
-    #[test]
-    fn part1() {
-        let rucksacks =
+    static RUCKSACKS: &str =
         "vJrwpWtwJgWrhcsFMMfFFhFp
 jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
 PmmdzqPrVvPwwTWBwg
@@ -69,19 +67,13 @@ wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
 ttgJtRGJQctTZtZT
 CrZsJsPPZsGzwwsLwLmpwMDw";
 
-        assert_eq!(priority_sum(&parse(rucksacks)), 157);
+    #[test]
+    fn part1() {
+        assert_eq!(priority_sum(&parse(RUCKSACKS)), 157);
     }
 
     #[test]
     fn part2() {
-        let rucksacks =
-        "vJrwpWtwJgWrhcsFMMfFFhFp
-jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
-PmmdzqPrVvPwwTWBwg
-wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
-ttgJtRGJQctTZtZT
-CrZsJsPPZsGzwwsLwLmpwMDw";
-
-        assert_eq!(badge_sum(&parse(rucksacks)), 70);
+        assert_eq!(badge_sum(&parse(RUCKSACKS)), 70);
     }
 }
