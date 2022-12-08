@@ -8,6 +8,7 @@ mod day04;
 mod day05;
 mod day06;
 mod day07;
+mod day08;
 
 fn day01() -> String {
     let f = fs::File::open("data/day01.input").unwrap();
@@ -64,6 +65,11 @@ fn day07() -> String {
     format!("part1: {}, part2: {}", sum_part1, min_part2)
 }
 
+fn day08() -> String {
+    let forest = day08::parse(&fs::read_to_string("data/day08.input").unwrap());
+    format!("part1: {}, part2: {}", day08::number_of_visible_trees(&forest), day08::best_scenic_score(&forest))
+}
+
 fn format_micros(t: u128) -> String {
     if t < 10_000 {
         format!("{} μs", t)
@@ -90,6 +96,7 @@ fn main() {
         day05,
         day06,
         day07,
+        day08,
     );
 
     let args: Vec<String> = env::args().skip(1).collect();
