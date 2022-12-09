@@ -1,4 +1,4 @@
-use std::{cmp::max, collections::HashSet};
+use std::collections::HashSet;
 
 enum Direction {
     Left,
@@ -28,10 +28,6 @@ pub fn parse(input: &str) -> Vec<Movement> {
     }).collect()
 }
 
-fn chebyshev_distance(p1: (i32, i32), p2: (i32, i32)) -> i32 {
-    max((p2.0 - p1.0).abs(), (p2.1 - p1.1).abs())
-}
-
 pub fn nb_positions_visited_by_tail<const N: usize>(movements: &[Movement]) -> usize {
     let mut visited: HashSet<(i32, i32)> = HashSet::new();
     visited.insert((0, 0));
@@ -53,19 +49,17 @@ pub fn nb_positions_visited_by_tail<const N: usize>(movements: &[Movement]) -> u
             for i in (0..N-1).rev() {
                 let target = rope[i+1];
                 let mut node = &mut rope[i];
-                if chebyshev_distance(*node, target) >= 2 {
-                    let (dx, dy) = (node.0 - target.0, node.1 - target.1);
-                    (node.0, node.1) =
-                        if dx.abs() > dy.abs() {
-                            (target.0 + dx.signum(), target.1)
-                        } else if dx.abs() < dy.abs() {
-                            (target.0, target.1 + dy.signum())
-                        } else {
-                            (target.0 + dx.signum(), target.1 + dy.signum())
-                        };
-                    if i == 0 {
-                        visited.insert(*node);
-                    }
+                let (dx, dy): (i32, i32) = (node.0 - target.0, node.1 - target.1);
+                let (dx_abs, dy_abs) = (dx.abs(), dy.abs());
+                if dx_abs == 2 && dy_abs == 2 {
+                    (node.0, node.1) = (target.0 + dx.signum(), target.1 + dy.signum());
+                } else if dx_abs >= 2 {
+                    (node.0, node.1) = (target.0 + dx.signum(), target.1);
+                } else if dy_abs >= 2 {
+                    (node.0, node.1) = (target.0, target.1 + dy.signum());
+                }
+                if i == 0 {
+                    visited.insert(*node);
                 }
             }
         }
