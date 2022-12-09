@@ -9,6 +9,7 @@ mod day05;
 mod day06;
 mod day07;
 mod day08;
+mod day09;
 
 fn day01() -> String {
     let f = fs::File::open("data/day01.input").unwrap();
@@ -70,6 +71,11 @@ fn day08() -> String {
     format!("part1: {}, part2: {}", day08::number_of_visible_trees(&forest), day08::best_scenic_score(&forest))
 }
 
+fn day09() -> String {
+    let movements = day09::parse(&fs::read_to_string("data/day09.input").unwrap());
+    format!("part1: {}, part2: {}", day09::nb_positions_visited_by_tail::<2>(&movements), day09::nb_positions_visited_by_tail::<10>(&movements))
+}
+
 fn format_micros(t: u128) -> String {
     if t < 10_000 {
         format!("{} μs", t)
@@ -97,6 +103,7 @@ fn main() {
         day06,
         day07,
         day08,
+        day09,
     );
 
     let args: Vec<String> = env::args().skip(1).collect();
