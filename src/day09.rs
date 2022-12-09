@@ -48,19 +48,24 @@ pub fn nb_positions_visited_by_tail<const N: usize>(movements: &[Movement]) -> u
             // 2) Move the rest of the rope.
             for i in (0..N-1).rev() {
                 let target = rope[i+1];
-                let mut node = &mut rope[i];
+                let mut node = rope[i];
+
                 let (dx, dy): (i32, i32) = (node.0 - target.0, node.1 - target.1);
                 let (dx_abs, dy_abs) = (dx.abs(), dy.abs());
+
                 if dx_abs == 2 && dy_abs == 2 {
-                    (node.0, node.1) = (target.0 + dx.signum(), target.1 + dy.signum());
+                    node = (target.0 + dx.signum(), target.1 + dy.signum());
                 } else if dx_abs >= 2 {
-                    (node.0, node.1) = (target.0 + dx.signum(), target.1);
+                    node = (target.0 + dx.signum(), target.1);
                 } else if dy_abs >= 2 {
-                    (node.0, node.1) = (target.0, target.1 + dy.signum());
+                    node = (target.0, target.1 + dy.signum());
                 }
-                if i == 0 {
-                    visited.insert(*node);
+
+                if i == 0 && node != rope[i] {
+                    visited.insert(node);
                 }
+
+                rope[i] = node;
             }
         }
     };
