@@ -10,6 +10,7 @@ mod day06;
 mod day07;
 mod day08;
 mod day09;
+mod day10;
 
 fn day01() -> String {
     let f = fs::File::open("data/day01.input").unwrap();
@@ -76,6 +77,13 @@ fn day09() -> String {
     format!("part1: {}, part2: {}", day09::nb_positions_visited_by_tail::<2>(&movements), day09::nb_positions_visited_by_tail::<10>(&movements))
 }
 
+fn day10() -> String {
+    let instructions = day10::parse(&fs::read_to_string("data/day10.input").unwrap());
+    let mut screen = day10::Screen::new();
+    let sum_signal_strength = screen.draw_screen(&instructions);
+    format!("part1: {}, part2: \n{}", sum_signal_strength, screen.to_ascii())
+}
+
 fn format_micros(t: u128) -> String {
     if t < 10_000 {
         format!("{} μs", t)
@@ -104,6 +112,7 @@ fn main() {
         day07,
         day08,
         day09,
+        day10,
     );
 
     let args: Vec<String> = env::args().skip(1).collect();
