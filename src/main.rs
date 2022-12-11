@@ -11,6 +11,7 @@ mod day07;
 mod day08;
 mod day09;
 mod day10;
+mod day11;
 
 fn day01() -> String {
     let f = fs::File::open("data/day01.input").unwrap();
@@ -84,6 +85,11 @@ fn day10() -> String {
     format!("part1: {}, part2: \n{}", sum_signal_strength, screen.to_ascii())
 }
 
+fn day11() -> String {
+    let monkeys = day11::parse(&fs::read_to_string("data/day11.input").unwrap());
+    format!("part1: {}, part2: {}", day11::run(&mut monkeys.clone(), 20, 3), day11::run(&mut monkeys.clone(), 10000, 1))
+}
+
 fn format_micros(t: u128) -> String {
     if t < 10_000 {
         format!("{} μs", t)
@@ -113,6 +119,7 @@ fn main() {
         day08,
         day09,
         day10,
+        day11,
     );
 
     let args: Vec<String> = env::args().skip(1).collect();
