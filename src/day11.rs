@@ -85,8 +85,7 @@ pub fn run(monkeys: &mut [Monkey], nb_rounds: u64, worry_divided: u64) -> u64 {
         }
     }
 
-    let most_inspected_items: Vec<&u64> = inspected.iter().sorted().rev().take(2).collect();
-    most_inspected_items[0] * most_inspected_items[1]
+    inspected.iter().sorted().rev().take(2).product()
 }
 
 #[cfg(test)]
