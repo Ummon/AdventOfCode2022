@@ -52,6 +52,8 @@ pub fn nb_steps(hm: &Heightmap, path: Path) -> i32 {
         positions
     };
 
+    visited[hm.end.0][hm.end.1] = 0;
+
     loop {
         step = step + 1;
         for (i, j) in positions.drain(..) {
@@ -59,7 +61,6 @@ pub fn nb_steps(hm: &Heightmap, path: Path) -> i32 {
                 return step;
             }
 
-            visited[i][j] = step;
             for (ni, nj) in neighbors(i, j) {
                 if visited[ni][nj] == -1 && hm.elevations[i][j] - hm.elevations[ni][nj] <= 1 {
                     visited[ni][nj] = step;
