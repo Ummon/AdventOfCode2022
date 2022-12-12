@@ -1,4 +1,4 @@
-use std::{str::Lines, collections::VecDeque};
+use std::{collections::VecDeque, str::Lines};
 
 use itertools::Itertools;
 
@@ -12,7 +12,13 @@ enum Operation {
 impl Operation {
     fn parse(op: &[&str]) -> Self {
         match op[1] {
-            "*" => if op[2] == "old" { Operation::MulOld } else { Operation::Mul(op[2].parse::<u64>().unwrap()) },
+            "*" => {
+                if op[2] == "old" {
+                    Operation::MulOld
+                } else {
+                    Operation::Mul(op[2].parse::<u64>().unwrap())
+                }
+            }
             "+" => Operation::Add(op[2].parse::<u64>().unwrap()),
             unknown => panic!("Unknown operation: {}", unknown),
         }
@@ -47,9 +53,16 @@ impl Monkey {
         lines.next()?; // Skip first line (Monkey number).
 
         Some(Monkey {
-            items: split_line(lines.next()?).skip(2).map(|v| v.parse::<u64>().unwrap()).collect(),
+            items: split_line(lines.next()?)
+                .skip(2)
+                .map(|v| v.parse::<u64>().unwrap())
+                .collect(),
             operation: Operation::parse(&split_line(lines.next()?).skip(3).collect::<Vec<&str>>()),
-            divisible_test: split_line(lines.next()?).nth(3).unwrap().parse::<u64>().unwrap(),
+            divisible_test: split_line(lines.next()?)
+                .nth(3)
+                .unwrap()
+                .parse::<u64>()
+                .unwrap(),
             monkey_to_throw_if_true: split_line(lines.next()?).nth(5).unwrap().parse().unwrap(),
             monkey_to_throw_if_false: split_line(lines.next()?).nth(5).unwrap().parse().unwrap(),
         })
@@ -69,7 +82,9 @@ pub fn parse(input: &str) -> Vec<Monkey> {
 pub fn run(monkeys: &mut [Monkey], nb_rounds: u64, worry_divided: u64) -> u64 {
     let mut inspected = vec![0u64; monkeys.len()];
 
-    let base = monkeys.iter().fold(1, |product, m| product * m.divisible_test);
+    let base = monkeys
+        .iter()
+        .fold(1, |product, m| product * m.divisible_test);
 
     for _ in 0..nb_rounds {
         for i in 0..monkeys.len() {
@@ -77,9 +92,13 @@ pub fn run(monkeys: &mut [Monkey], nb_rounds: u64, worry_divided: u64) -> u64 {
                 inspected[i] += 1;
                 let new_worry = (monkeys[i].operation.apply(item) / worry_divided) % base;
                 if new_worry % monkeys[i].divisible_test == 0 {
-                    monkeys[monkeys[i].monkey_to_throw_if_true].items.push_back(new_worry);
+                    monkeys[monkeys[i].monkey_to_throw_if_true]
+                        .items
+                        .push_back(new_worry);
                 } else {
-                    monkeys[monkeys[i].monkey_to_throw_if_false].items.push_back(new_worry);
+                    monkeys[monkeys[i].monkey_to_throw_if_false]
+                        .items
+                        .push_back(new_worry);
                 }
             }
         }
@@ -92,8 +111,7 @@ pub fn run(monkeys: &mut [Monkey], nb_rounds: u64, worry_divided: u64) -> u64 {
 mod tests {
     use super::*;
 
-    static MONKEYS: &str =
-        "Monkey 0:
+    static MONKEYS: &str = "Monkey 0:
          Starting items: 79, 98
          Operation: new = old * 19
          Test: divisible by 23

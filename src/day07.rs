@@ -8,7 +8,10 @@ pub struct Dir {
 
 impl Dir {
     fn new() -> Dir {
-        Dir { files: Vec::new(), dirs: Vec::new() }
+        Dir {
+            files: Vec::new(),
+            dirs: Vec::new(),
+        }
     }
 
     fn get_file_size(&self) -> i64 {
@@ -19,7 +22,13 @@ impl Dir {
     where
         P: Fn(i64) -> bool + Copy,
     {
-        let size = self.get_file_size() + self.dirs.iter().map(|dir| dir.dir_sizes(predicate, result)).sum::<i64>();
+        let size = self.get_file_size()
+            + self
+                .dirs
+                .iter()
+                .map(|dir| dir.dir_sizes(predicate, result))
+                .sum::<i64>();
+
         if predicate(size) {
             result.push(size)
         }

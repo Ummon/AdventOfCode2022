@@ -37,7 +37,11 @@ pub fn parse(s: &str) -> (Stacks, Vec<Move>) {
     let mut moves = Vec::new();
     while let Some(line) = lines.next() {
         let cap = r.captures(line).unwrap();
-        moves.push(Move { n: cap[1].parse().unwrap(), from: cap[2].parse::<usize>().unwrap() - 1, to: cap[3].parse::<usize>().unwrap() - 1 });
+        moves.push(Move {
+            n: cap[1].parse().unwrap(),
+            from: cap[2].parse::<usize>().unwrap() - 1,
+            to: cap[3].parse::<usize>().unwrap() - 1,
+        });
     }
 
     (stacks, moves)
@@ -72,7 +76,7 @@ pub fn get_top_as_string(stacks: &Stacks) -> String {
 mod tests {
     use super::*;
 
-    static STACKS_AND_MOVES: &str ="    [D]
+    static STACKS_AND_MOVES: &str = "    [D]
 [N] [C]
 [Z] [M] [P]
  1   2   3

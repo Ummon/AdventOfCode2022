@@ -10,7 +10,7 @@ pub fn first_marker_pos(signal: &str, n: usize) -> usize {
 // Warning: O(n^2).
 fn contains_same_char(chars: &[char]) -> bool {
     for i in 0..chars.len() {
-        for j in i+1..chars.len() {
+        for j in i + 1..chars.len() {
             if chars[i] == chars[j] {
                 return true;
             }
@@ -37,7 +37,10 @@ mod tests {
         assert_eq!(first_marker_pos("mjqjpqmgbljsphdztnvjfqwrcgsmlb", 14), 19);
         assert_eq!(first_marker_pos("bvwbjplbgvbhsrlpgdmjqwftvncz", 14), 23);
         assert_eq!(first_marker_pos("nppdvjthqldpwncqszvftbrmjlhg", 14), 23);
-        assert_eq!(first_marker_pos("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg", 14), 29);
+        assert_eq!(
+            first_marker_pos("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg", 14),
+            29
+        );
         assert_eq!(first_marker_pos("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw", 14), 26);
     }
 }

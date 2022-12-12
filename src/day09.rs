@@ -13,19 +13,22 @@ pub struct Movement {
 }
 
 pub fn parse(input: &str) -> Vec<Movement> {
-    input.lines().map(|l| {
-        let split: Vec<&str> = l.trim().split(' ').collect();
-        Movement {
-            direction: match split[0] {
-                "L" => Direction::Left,
-                "U" => Direction::Up,
-                "R" => Direction::Right,
-                "D" => Direction::Down,
-                other => panic!("Uknown movement: {}", other),
-            },
-            distance: split[1].parse().expect("Can't parse distance"),
-        }
-    }).collect()
+    input
+        .lines()
+        .map(|l| {
+            let split: Vec<&str> = l.trim().split(' ').collect();
+            Movement {
+                direction: match split[0] {
+                    "L" => Direction::Left,
+                    "U" => Direction::Up,
+                    "R" => Direction::Right,
+                    "D" => Direction::Down,
+                    other => panic!("Uknown movement: {}", other),
+                },
+                distance: split[1].parse().expect("Can't parse distance"),
+            }
+        })
+        .collect()
 }
 
 pub fn nb_positions_visited_by_tail<const N: usize>(movements: &[Movement]) -> usize {
@@ -37,7 +40,7 @@ pub fn nb_positions_visited_by_tail<const N: usize>(movements: &[Movement]) -> u
     for m in movements {
         for _ in 0..m.distance {
             // 1) Move the head.
-            let h = &mut rope[N-1];
+            let h = &mut rope[N - 1];
             *h = match m.direction {
                 Direction::Left => (h.0 - 1, h.1),
                 Direction::Up => (h.0, h.1 - 1),
@@ -46,8 +49,8 @@ pub fn nb_positions_visited_by_tail<const N: usize>(movements: &[Movement]) -> u
             };
 
             // 2) Move the rest of the rope.
-            for i in (0..N-1).rev() {
-                let target = rope[i+1];
+            for i in (0..N - 1).rev() {
+                let target = rope[i + 1];
                 let node = &mut rope[i];
 
                 let (dx, dy): (i32, i32) = (target.0 - node.0, target.1 - node.1);
@@ -61,7 +64,7 @@ pub fn nb_positions_visited_by_tail<const N: usize>(movements: &[Movement]) -> u
                 }
             }
         }
-    };
+    }
     visited.len()
 }
 
@@ -69,15 +72,14 @@ pub fn nb_positions_visited_by_tail<const N: usize>(movements: &[Movement]) -> u
 mod tests {
     use super::*;
 
-    static MOVEMENTS: &str =
-        "R 4
-         U 4
-         L 3
-         D 1
-         R 4
-         D 1
-         L 5
-         R 2";
+    static MOVEMENTS: &str = "R 4
+        U 4
+        L 3
+        D 1
+        R 4
+        D 1
+        L 5
+        R 2";
 
     #[test]
     fn part1() {
@@ -92,13 +94,14 @@ mod tests {
 
         let movements_2 = parse(
             "R 5
-             U 8
-             L 8
-             D 3
-             R 17
-             D 10
-             L 25
-             U 20");
+            U 8
+            L 8
+            D 3
+            R 17
+            D 10
+            L 25
+            U 20",
+        );
         assert_eq!(nb_positions_visited_by_tail::<10>(&movements_2), 36);
     }
 }

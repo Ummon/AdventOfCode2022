@@ -10,7 +10,11 @@ fn char_to_num(c: char) -> i32 {
 }
 
 pub fn parse(input: &str) -> Heightmap {
-    let mut hm = Heightmap { elevations: Vec::new(), start: (0, 0), end: (0, 0) };
+    let mut hm = Heightmap {
+        elevations: Vec::new(),
+        start: (0, 0),
+        end: (0, 0),
+    };
     for (i, l) in input.lines().enumerate() {
         let mut row = Vec::new();
         for (j, c) in l.trim().chars().enumerate() {
@@ -44,10 +48,18 @@ pub fn nb_steps(hm: &Heightmap, path: Path) -> i32 {
 
     let neighbors = |i, j| {
         let mut positions = Vec::new();
-        if i > 0 { positions.push((i - 1, j)); }
-        if i < n - 1 { positions.push((i + 1, j)); }
-        if j > 0 { positions.push((i, j - 1)); }
-        if j < m - 1 { positions.push((i, j + 1)); }
+        if i > 0 {
+            positions.push((i - 1, j));
+        }
+        if i < n - 1 {
+            positions.push((i + 1, j));
+        }
+        if j > 0 {
+            positions.push((i, j - 1));
+        }
+        if j < m - 1 {
+            positions.push((i, j + 1));
+        }
         positions
     };
 
@@ -56,7 +68,9 @@ pub fn nb_steps(hm: &Heightmap, path: Path) -> i32 {
     loop {
         step = step + 1;
         for (i, j) in positions.drain(..) {
-            if path == Path::StartToEnd && (i, j) == hm.start || path == Path::EndTo0Elevation && hm.elevations[i][j] == 0 {
+            if path == Path::StartToEnd && (i, j) == hm.start
+                || path == Path::EndTo0Elevation && hm.elevations[i][j] == 0
+            {
                 return step;
             }
 
@@ -75,12 +89,11 @@ pub fn nb_steps(hm: &Heightmap, path: Path) -> i32 {
 mod tests {
     use super::*;
 
-    static HEIGHTMAP: &str =
-        "Sabqponm
-         abcryxxl
-         accszExk
-         acctuvwj
-         abdefghi";
+    static HEIGHTMAP: &str = "Sabqponm
+        abcryxxl
+        accszExk
+        acctuvwj
+        abdefghi";
 
     #[test]
     fn part1() {

@@ -1,14 +1,15 @@
 pub fn parse(s: &str) -> Vec<Vec<u8>> {
     s.lines()
-        .map(|l| {
-            l.as_bytes().into_iter().map(letter_to_priority).collect()
-        }).collect()
+        .map(|l| l.as_bytes().into_iter().map(letter_to_priority).collect())
+        .collect()
 }
 
 fn letter_to_priority(v: &u8) -> u8 {
-    if *v >= 97 { // >= 'a'
+    if *v >= 97 {
+        // >= 'a'
         v - 96
-    } else { // < 'a'
+    } else {
+        // < 'a'
         v - 38
     }
 }
@@ -59,8 +60,7 @@ pub fn badge_sum(rucksacks: &[Vec<u8>]) -> i32 {
 mod tests {
     use super::*;
 
-    static RUCKSACKS: &str =
-        "vJrwpWtwJgWrhcsFMMfFFhFp
+    static RUCKSACKS: &str = "vJrwpWtwJgWrhcsFMMfFFhFp
 jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
 PmmdzqPrVvPwwTWBwg
 wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn

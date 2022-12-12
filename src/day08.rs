@@ -1,4 +1,7 @@
-use itertools::{FoldWhile::{Continue, Done}, Itertools};
+use itertools::{
+    FoldWhile::{Continue, Done},
+    Itertools,
+};
 
 #[derive(Clone, Copy)]
 enum Orientation {
@@ -13,7 +16,7 @@ pub struct Matrix<T>(Vec<Vec<T>>);
 
 impl<T> Matrix<T>
 where
-    T: Default + Clone
+    T: Default + Clone,
 {
     fn new(h: usize, w: usize) -> Self {
         let mut m: Vec<Vec<T>> = Vec::new();
@@ -55,11 +58,14 @@ where
     }
 }
 
-
 pub fn parse(input: &str) -> Matrix<i32> {
     let mut m: Vec<Vec<i32>> = Vec::new();
     for l in input.lines() {
-        let row: Vec<i32> = l.trim().chars().map(|c| c.to_digit(10).unwrap() as i32).collect();
+        let row: Vec<i32> = l
+            .trim()
+            .chars()
+            .map(|c| c.to_digit(10).unwrap() as i32)
+            .collect();
         m.push(row);
     }
     Matrix(m)
@@ -73,7 +79,12 @@ pub fn number_of_visible_trees(forest: &Matrix<i32>) -> i32 {
     let mut visibility = Matrix::<bool>::new(h, w);
     let mut nb_visible_tree = 0;
 
-    for o in [Orientation::West, Orientation::North, Orientation::Est, Orientation::South] {
+    for o in [
+        Orientation::West,
+        Orientation::North,
+        Orientation::Est,
+        Orientation::South,
+    ] {
         for i in 0..h {
             let mut max = -1;
             for j in 0..w {
@@ -97,13 +108,50 @@ pub fn best_scenic_score(forest: &Matrix<i32>) -> i32 {
 
     let mut current_best_score = -1;
 
-    for i in 1..h-1 {
-        for j in 1..w-1 {
+    for i in 1..h - 1 {
+        for j in 1..w - 1 {
             let current = forest.get(i, j);
-            let dist_w = (1..j).rev().fold_while(1, |dist, j2| if forest.get(i, j2) >= current { Done(dist) } else { Continue(dist + 1) }).into_inner();
-            let dist_n = (1..i).rev().fold_while(1, |dist, i2| if forest.get(i2, j) >= current { Done(dist) } else { Continue(dist + 1) }).into_inner();
-            let dist_e = (j+1..w-1).fold_while(1, |dist, j2| if forest.get(i, j2) >= current { Done(dist) } else { Continue(dist + 1) }).into_inner();
-            let dist_s = (i+1..h-1).fold_while(1, |dist, i2| if forest.get(i2, j) >= current { Done(dist) } else { Continue(dist + 1) }).into_inner();
+            let dist_w = (1..j)
+                .rev()
+                .fold_while(1, |dist, j2| {
+                    if forest.get(i, j2) >= current {
+                        Done(dist)
+                    } else {
+                        Continue(dist + 1)
+                    }
+                })
+                .into_inner();
+
+            let dist_n = (1..i)
+                .rev()
+                .fold_while(1, |dist, i2| {
+                    if forest.get(i2, j) >= current {
+                        Done(dist)
+                    } else {
+                        Continue(dist + 1)
+                    }
+                })
+                .into_inner();
+
+            let dist_e = (j + 1..w - 1)
+                .fold_while(1, |dist, j2| {
+                    if forest.get(i, j2) >= current {
+                        Done(dist)
+                    } else {
+                        Continue(dist + 1)
+                    }
+                })
+                .into_inner();
+
+            let dist_s = (i + 1..h - 1)
+                .fold_while(1, |dist, i2| {
+                    if forest.get(i2, j) >= current {
+                        Done(dist)
+                    } else {
+                        Continue(dist + 1)
+                    }
+                })
+                .into_inner();
 
             let score = dist_w * dist_n * dist_e * dist_s;
             if score > current_best_score {
@@ -119,12 +167,11 @@ pub fn best_scenic_score(forest: &Matrix<i32>) -> i32 {
 mod tests {
     use super::*;
 
-    static FOREST: &str =
-        "30373
-         25512
-         65332
-         33549
-         35390";
+    static FOREST: &str = "30373
+        25512
+        65332
+        33549
+        35390";
 
     #[test]
     fn part1() {
