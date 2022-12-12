@@ -1,4 +1,4 @@
-use std::{collections::VecDeque, str::Lines};
+use std::str::Lines;
 
 use itertools::Itertools;
 
@@ -35,7 +35,7 @@ impl Operation {
 
 #[derive(Debug, Clone)]
 pub struct Monkey {
-    items: VecDeque<u64>,
+    items: Vec<u64>,
     operation: Operation,
     divisible_test: u64,
     monkey_to_throw_if_true: usize,
@@ -79,7 +79,7 @@ pub fn parse(input: &str) -> Vec<Monkey> {
     monkeys
 }
 
-pub fn run(monkeys: &mut [Monkey], nb_rounds: u64, worry_divided: u64) -> u64 {
+pub fn run<const WORRY_DIVIDED: u64>(monkeys: &mut [Monkey], nb_rounds: u64) -> u64 {
     let mut inspected = vec![0u64; monkeys.len()];
 
     let base = monkeys
@@ -88,17 +88,17 @@ pub fn run(monkeys: &mut [Monkey], nb_rounds: u64, worry_divided: u64) -> u64 {
 
     for _ in 0..nb_rounds {
         for i in 0..monkeys.len() {
-            while let Some(item) = monkeys[i].items.pop_front() {
+            while let Some(item) = monkeys[i].items.pop() {
                 inspected[i] += 1;
-                let new_worry = (monkeys[i].operation.apply(item) / worry_divided) % base;
+                let new_worry = (monkeys[i].operation.apply(item) / WORRY_DIVIDED) % base;
                 if new_worry % monkeys[i].divisible_test == 0 {
                     monkeys[monkeys[i].monkey_to_throw_if_true]
                         .items
-                        .push_back(new_worry);
+                        .push(new_worry);
                 } else {
                     monkeys[monkeys[i].monkey_to_throw_if_false]
                         .items
-                        .push_back(new_worry);
+                        .push(new_worry);
                 }
             }
         }
@@ -142,12 +142,12 @@ mod tests {
     #[test]
     fn part1() {
         let mut monkeys = parse(MONKEYS);
-        assert_eq!(run(&mut monkeys, 20, 3), 10605);
+        assert_eq!(run::<3>(&mut monkeys, 20), 10605);
     }
 
     #[test]
     fn part2() {
         let mut monkeys = parse(MONKEYS);
-        assert_eq!(run(&mut monkeys, 10000, 1), 2713310158);
+        assert_eq!(run::<1>(&mut monkeys, 10000), 2713310158);
     }
 }
