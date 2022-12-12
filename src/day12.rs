@@ -37,8 +37,7 @@ pub enum Path {
 
 pub fn nb_steps(hm: &Heightmap, path: Path) -> i32 {
     let (n, m) = (hm.elevations.len(), hm.elevations[0].len());
-    let mut visited: Vec<Vec<i32>> = Vec::new();
-    for _ in 0..n { visited.push(vec![-1; m]); }
+    let mut visited: Vec<Vec<i32>> = vec![vec![-1; m]; n];
     let mut positions = vec![hm.end];
     let mut next_positions = Vec::new();
     let mut step = -1;
