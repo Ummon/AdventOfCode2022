@@ -38,25 +38,22 @@ impl Signal {
         chars.push(' ');
         parse_chars(&mut chars.windows(2))
     }
+
+    fn as_slice(&self) -> &[Self] {
+        if let Signal::List(l) = self {
+            l.as_slice()
+        } else {
+            std::slice::from_ref(self)
+        }
+    }
 }
 
 impl Ord for Signal {
     fn cmp(&self, other: &Signal) -> Ordering {
-        match (self, other) {
-            (Signal::Value(v1), Signal::Value(v2)) => v1.cmp(v2),
-            (v1 @ Signal::Value(_), l2 @ Signal::List(_)) => Signal::List(vec![v1.clone()]).cmp(l2),
-            (l1 @ Signal::List(_), v2 @ Signal::Value(_)) => {
-                l1.cmp(&Signal::List(vec![v2.clone()]))
-            }
-            (Signal::List(l1), Signal::List(l2)) => {
-                for i in 0..l1.len().min(l2.len()) {
-                    match l1[i].cmp(&l2[i]) {
-                        Ordering::Equal => (),
-                        other => return other,
-                    }
-                }
-                l1.len().cmp(&l2.len())
-            }
+        if let (Signal::Value(v1), Signal::Value(v2)) = (self, other) {
+            v1.cmp(v2)
+        } else {
+            self.as_slice().cmp(other.as_slice())
         }
     }
 }
