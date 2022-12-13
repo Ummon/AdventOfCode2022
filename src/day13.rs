@@ -40,12 +40,6 @@ impl Signal {
     }
 }
 
-impl PartialOrd for Signal {
-    fn partial_cmp(&self, other: &Signal) -> Option<Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
 impl Ord for Signal {
     fn cmp(&self, other: &Signal) -> Ordering {
         match (self, other) {
@@ -64,6 +58,12 @@ impl Ord for Signal {
                 l1.len().cmp(&l2.len())
             }
         }
+    }
+}
+
+impl PartialOrd for Signal {
+    fn partial_cmp(&self, other: &Signal) -> Option<Ordering> {
+        Some(self.cmp(other))
     }
 }
 
@@ -94,8 +94,6 @@ pub fn product_indices_special_signals(signals: &[Signal]) -> usize {
     signals.sort();
     (signals.binary_search(&s1).unwrap() + 1) * (signals.binary_search(&s2).unwrap() + 1)
 }
-
-// pub fn sort(signals: &vec[])
 
 #[cfg(test)]
 mod tests {
