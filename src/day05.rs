@@ -48,19 +48,19 @@ pub fn parse(s: &str) -> (Stacks, Vec<Move>) {
 }
 
 pub fn apply_moves_by_crate_mover_9000(stacks: &mut Stacks, moves: &[Move]) {
-    apply_moves(stacks, moves, true);
+    apply_moves::<true>(stacks, moves);
 }
 
 pub fn apply_moves_by_crate_mover_9001(stacks: &mut Stacks, moves: &[Move]) {
-    apply_moves(stacks, moves, false);
+    apply_moves::<false>(stacks, moves);
 }
 
-fn apply_moves(stacks: &mut Stacks, moves: &[Move], reverse_stack: bool) {
+fn apply_moves<const REVERSE_STACK: bool>(stacks: &mut Stacks, moves: &[Move]) {
     for m in moves {
         let from = stacks.get_mut(m.from).unwrap();
         let mut to_move = from.split_off(from.len() - m.n);
 
-        if reverse_stack {
+        if REVERSE_STACK {
             to_move.make_contiguous().reverse();
         }
 
