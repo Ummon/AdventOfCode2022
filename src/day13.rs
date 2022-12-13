@@ -1,6 +1,6 @@
 use std::cmp::{Ord, Ordering, PartialOrd};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Signal {
     Value(i32),
     List(Vec<Signal>),
@@ -83,13 +83,22 @@ pub fn sum_indices_signals_in_the_right_order(signals: &[Signal]) -> usize {
 }
 
 pub fn product_indices_special_signals(signals: &[Signal]) -> usize {
-    let mut signals = Vec::from(signals);
     let s1 = Signal::parse("[[2]]");
     let s2 = Signal::parse("[[6]]");
-    signals.push(s1.clone());
-    signals.push(s2.clone());
-    signals.sort();
-    (signals.binary_search(&s1).unwrap() + 1) * (signals.binary_search(&s2).unwrap() + 1)
+
+    let mut pos_1 = 1;
+    let mut pos_2 = 2;
+
+    for s in signals {
+        if s < &s1 {
+            pos_1 += 1;
+            pos_2 += 1;
+        } else if s < &s2 {
+            pos_2 += 1;
+        }
+    }
+
+    pos_1 * pos_2
 }
 
 #[cfg(test)]
