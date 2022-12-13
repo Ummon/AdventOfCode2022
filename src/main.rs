@@ -1,4 +1,7 @@
-use std::{env, time::Instant};
+use std::time::Instant;
+
+use clap::Parser;
+use rayon::prelude::*;
 
 mod day01;
 mod day02;
@@ -12,7 +15,18 @@ mod day09;
 mod day10;
 mod day11;
 mod day12;
+mod day13;
 mod days;
+
+#[derive(Parser, Debug)]
+#[command(author = "Greg Burri", version = "1.0", about = "Advent of Code 2022")]
+struct Args {
+    #[arg(index(1), exclusive(true))]
+    day: Option<usize>,
+
+    #[arg(short, long)]
+    parallel: bool,
+}
 
 fn main() {
     println!("https://adventofcode.com/2022");
@@ -30,27 +44,35 @@ fn main() {
         days::day10,
         days::day11,
         days::day12,
+        days::day13,
     ];
 
-    let args: Vec<String> = env::args().skip(1).collect();
+    let args = Args::parse();
 
-    // No argument -> execute all day problems.
-    if args.is_empty() {
-        let now = Instant::now();
-        for i in 1..=days.len() {
-            do_day(&days, i)
-        }
-        println!(
-            "Time to execute all days: {}",
-            format_micros(now.elapsed().as_micros())
-        );
-    } else {
-        for arg in args {
-            match arg.parse::<usize>() {
-                Ok(day) if day >= 1 && day <= days.len() => do_day(&days, day),
-                Ok(day) => println!("Unknown day: {}", day),
-                Err(error) => println!("Unable to parse day number: \"{}\", error: {}", arg, error),
+    match args.day {
+        Some(day) => {
+            if day >= 1 && day <= days.len() {
+                do_day(&days, day)
+            } else {
+                println!("Unknown day: {}", day)
             }
+        }
+        // No argument -> execute all day problems.
+        None => {
+            let now = Instant::now();
+
+            if args.parallel {
+                (1..=days.len())
+                    .into_par_iter()
+                    .for_each(|d| do_day(&days, d));
+            } else {
+                (1..=days.len()).for_each(|d| do_day(&days, d));
+            }
+
+            println!(
+                "Time to execute all days: {}",
+                format_micros(now.elapsed().as_micros())
+            );
         }
     }
 }

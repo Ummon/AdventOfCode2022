@@ -9,6 +9,8 @@ edition = "2021"
 [dependencies]
 itertools = "0.10"
 regex = "1"
+clap = { version = "4", features = ["derive"] }
+rayon = "1.6"
 
 [profile.release]
 opt-level = 3

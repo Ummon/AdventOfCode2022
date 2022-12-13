@@ -120,8 +120,8 @@ pub fn day11() -> String {
     let monkeys = day11::parse(&fs::read_to_string("data/day11.input").unwrap());
     format!(
         "part1: {}, part2: {}",
-        day11::run(&mut monkeys.clone(), 20, 3),
-        day11::run(&mut monkeys.clone(), 10000, 1)
+        day11::run::<3>(&mut monkeys.clone(), 20),
+        day11::run::<1>(&mut monkeys.clone(), 10000)
     )
 }
 
@@ -131,5 +131,14 @@ pub fn day12() -> String {
         "part1: {}, part2: {}",
         day12::nb_steps(&heightmap, day12::Path::StartToEnd),
         day12::nb_steps(&heightmap, day12::Path::EndTo0Elevation)
+    )
+}
+
+pub fn day13() -> String {
+    let signals = day13::parse(&fs::read_to_string("data/day13.input").unwrap());
+    format!(
+        "part1: {}, part2: {}",
+        day13::sum_indices_signals_in_the_right_order(&signals),
+        day13::product_indices_special_signals(&signals)
     )
 }
