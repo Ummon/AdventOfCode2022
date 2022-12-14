@@ -142,3 +142,12 @@ pub fn day13() -> String {
         day13::product_indices_special_signals(&signals)
     )
 }
+
+pub fn day14() -> String {
+    let (rocks, floor) = day14::parse(&fs::read_to_string("data/day14.input").unwrap());
+    let (first_grain_touching_floor, last_grain) = day14::poor_sand(rocks, floor);
+    format!(
+        "part1: {}, part2: {}",
+        first_grain_touching_floor, last_grain
+    )
+}
