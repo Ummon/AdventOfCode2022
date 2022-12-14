@@ -93,8 +93,8 @@ fn format_micros(t: u128) -> String {
     if t < 10_000 {
         format!("{} μs", t)
     } else if t < 10_000_000u128 {
-        format!("{} ms", t / 1_000u128)
+        format!("{:.2} ms", t as f64 / 1e3f64)
     } else {
-        format!("{} s", t / 1_000_000u128)
+        format!("{:.2} s", t as f64 / 1e6f64)
     }
 }

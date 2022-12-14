@@ -10,7 +10,9 @@ pub struct Rocks {
 
 impl Rocks {
     fn new() -> Self {
-        Rocks { state: Box::new([false; N * M]) }
+        Rocks {
+            state: Box::new([false; N * M]),
+        }
     }
 
     fn get(&self, i: usize, j: usize) -> bool {
@@ -30,7 +32,10 @@ pub fn parse(input: &str) -> (Rocks, usize) {
             .split("->")
             .map(|p| {
                 let ji: Vec<&str> = p.split(',').collect();
-                (ji[1].parse::<usize>().unwrap(), ji[0].parse::<usize>().unwrap())
+                (
+                    ji[1].parse::<usize>().unwrap(),
+                    ji[0].parse::<usize>().unwrap(),
+                )
             })
             .tuple_windows()
         {
