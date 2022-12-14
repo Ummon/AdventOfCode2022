@@ -1,10 +1,28 @@
-use std::collections::HashSet;
-
 use itertools::Itertools;
 
-type Rocks = HashSet<(i32, i32)>;
+// 1000x1000 matrix.
+const N: usize = 1000;
+const M: usize = 1000;
 
-pub fn parse(input: &str) -> (Rocks, i32) {
+pub struct Rocks {
+    state: Box<[bool; N * M]>,
+}
+
+impl Rocks {
+    fn new() -> Self {
+        Rocks { state: Box::new([false; N * M]) }
+    }
+
+    fn get(&self, i: usize, j: usize) -> bool {
+        self.state[N * i + j]
+    }
+
+    fn set(&mut self, i: usize, j: usize) {
+        self.state[N * i + j] = true;
+    }
+}
+
+pub fn parse(input: &str) -> (Rocks, usize) {
     let mut max_i = 0;
     let mut rocks = Rocks::new();
     for l in input.lines().map(|l| l.replace(" ", "")) {
@@ -12,13 +30,13 @@ pub fn parse(input: &str) -> (Rocks, i32) {
             .split("->")
             .map(|p| {
                 let ji: Vec<&str> = p.split(',').collect();
-                (ji[1].parse::<i32>().unwrap(), ji[0].parse::<i32>().unwrap())
+                (ji[1].parse::<usize>().unwrap(), ji[0].parse::<usize>().unwrap())
             })
             .tuple_windows()
         {
             for i in i1.min(i2)..=i1.max(i2) {
                 for j in j1.min(j2)..=j1.max(j2) {
-                    rocks.insert((i, j));
+                    rocks.set(i, j);
                     max_i = i.max(max_i);
                 }
             }
@@ -27,34 +45,36 @@ pub fn parse(input: &str) -> (Rocks, i32) {
     (rocks, max_i + 2)
 }
 
-pub fn poor_sand(mut rocks: Rocks, floor: i32) -> (i32, i32) {
+pub fn poor_sand(mut rocks: Rocks, floor: usize) -> (i32, i32) {
     let mut n = 0;
     let mut first_n_touching_floor = 0;
 
-    fn is_obstruct(i: i32, j: i32, rocks: &Rocks, floor: i32) -> bool {
-        i >= floor || rocks.contains(&(i, j))
+    fn is_obstruct(i: usize, j: usize, rocks: &Rocks, floor: usize) -> bool {
+        i >= floor || rocks.get(i, j)
     }
 
     loop {
-        let mut grain = (0, 500);
+        let (mut grain_i, mut grain_j) = (0, 500);
 
-        if rocks.contains(&grain) {
+        if rocks.get(grain_i, grain_j) {
             return (first_n_touching_floor, n);
         }
 
         loop {
-            if first_n_touching_floor == 0 && grain.0 + 1 >= floor {
+            let grain_i_next = grain_i + 1;
+
+            if first_n_touching_floor == 0 && grain_i_next >= floor {
                 first_n_touching_floor = n;
             }
 
-            if !is_obstruct(grain.0 + 1, grain.1, &rocks, floor) {
-                grain = (grain.0 + 1, grain.1);
-            } else if !is_obstruct(grain.0 + 1, grain.1 - 1, &rocks, floor) {
-                grain = (grain.0 + 1, grain.1 - 1);
-            } else if !is_obstruct(grain.0 + 1, grain.1 + 1, &rocks, floor) {
-                grain = (grain.0 + 1, grain.1 + 1);
+            if !is_obstruct(grain_i_next, grain_j, &rocks, floor) {
+                (grain_i, grain_j) = (grain_i_next, grain_j);
+            } else if !is_obstruct(grain_i_next, grain_j - 1, &rocks, floor) {
+                (grain_i, grain_j) = (grain_i_next, grain_j - 1);
+            } else if !is_obstruct(grain_i_next, grain_j + 1, &rocks, floor) {
+                (grain_i, grain_j) = (grain_i_next, grain_j + 1);
             } else {
-                rocks.insert(grain);
+                rocks.set(grain_i, grain_j);
                 break;
             }
         }
