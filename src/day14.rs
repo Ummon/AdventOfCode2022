@@ -1,7 +1,7 @@
 use itertools::Itertools;
 
-// 1000x1000 matrix.
-const N: usize = 1000;
+// 200x1000 matrix.
+const N: usize = 200;
 const M: usize = 1000;
 
 pub struct Rocks {
