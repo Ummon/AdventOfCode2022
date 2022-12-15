@@ -151,3 +151,12 @@ pub fn day14() -> String {
         first_grain_touching_floor, last_grain
     )
 }
+
+pub fn day15() -> String {
+    let (sensors, beacons) = day15::parse(&fs::read_to_string("data/day15.input").unwrap());
+    format!(
+        "part1: {}, part2: {}",
+        day15::number_of_position_without_beacon(&sensors, &beacons, 2_000_000),
+        day15::tuning_frequency(&sensors, 4_000_000)
+    )
+}
