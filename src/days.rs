@@ -145,7 +145,7 @@ pub fn day13() -> String {
 
 pub fn day14() -> String {
     let (rocks, floor) = day14::parse(&fs::read_to_string("data/day14.input").unwrap());
-    let (first_grain_touching_floor, last_grain) = day14::poor_sand(rocks, floor);
+    let (first_grain_touching_floor, last_grain) = day14::pour_sand(rocks, floor);
     format!(
         "part1: {}, part2: {}",
         first_grain_touching_floor, last_grain

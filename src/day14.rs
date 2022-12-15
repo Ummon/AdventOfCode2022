@@ -50,7 +50,7 @@ pub fn parse(input: &str) -> (Rocks, usize) {
     (rocks, max_i + 2)
 }
 
-pub fn poor_sand(mut rocks: Rocks, floor: usize) -> (i32, i32) {
+pub fn pour_sand(mut rocks: Rocks, floor: usize) -> (i32, i32) {
     let mut n = 0;
     let mut first_n_touching_floor = 0;
 
@@ -97,12 +97,12 @@ mod tests {
     #[test]
     fn part1() {
         let (rocks, floor) = parse(ROCKS);
-        assert_eq!(poor_sand(rocks, floor).0, 24);
+        assert_eq!(pour_sand(rocks, floor).0, 24);
     }
 
     #[test]
     fn part2() {
         let (rocks, floor) = parse(ROCKS);
-        assert_eq!(poor_sand(rocks, floor).1, 93);
+        assert_eq!(pour_sand(rocks, floor).1, 93);
     }
 }
