@@ -3,6 +3,8 @@ use std::collections::HashMap;
 use itertools::Itertools;
 use regex::{self, Regex};
 
+const MAX_TRAVEL_TIME_FROM_ONE_VALVE_TO_ANOTHER: i32 = 9; // [min].
+
 #[derive(Debug)]
 pub struct Valve {
     neighbours: Vec<i32>,
@@ -51,7 +53,8 @@ pub fn parse(input: &str) -> (i32, Vec<Valve>) {
     (valve_aa, valves)
 }
 
-pub fn most_pressure(start: i32, time: i32, valves: &[Valve]) -> i32 {
+pub fn most_pressure(start: i32, time: i32, nb_people: i32, valves: &[Valve]) -> i32 {
+    // TODO: use Floyd-Warshall algorithm.
     let n = valves.len();
     let mut times_tables = vec![vec![0; n]; n];
     for i in 0..valves.len() {
@@ -78,43 +81,84 @@ pub fn most_pressure(start: i32, time: i32, valves: &[Valve]) -> i32 {
         .filter_map(|(i, v)| if v.flow > 0 { Some(i as i32) } else { None })
         .collect();
 
+    #[derive(Debug, Clone, Copy)]
+    struct Node {
+        valve: i32,
+        time_opened: i32,
+    }
+
     fn best_score(
-        time_left: i32,
-        current_path: Vec<i32>,
-        non_broken_valves: &[i32],
+        total_time: i32,
+        current_nodes: &[Node],
+        unvisited_non_broken_valves: &[i32],
         times_tables: &[Vec<i32>],
         valves: &[Valve],
     ) -> i32 {
-        non_broken_valves
+        let pressure_released: i32 = current_nodes
             .iter()
-            .map(|v| {
-                if !current_path.contains(v) {
-                    let time = times_tables[*current_path.last().unwrap() as usize][*v as usize];
-                    // -1 is the time to open the valve.
-                    let time_left_after_v = time_left - time - 1;
-                    if time_left_after_v > 0 {
-                        let mut path_cloned = current_path.clone();
-                        path_cloned.push(*v);
-                        time_left_after_v * valves[*v as usize].flow
-                            + best_score(
-                                time_left_after_v,
-                                path_cloned,
-                                non_broken_valves,
-                                times_tables,
-                                valves,
-                            )
+            .map(|node| (total_time - node.time_opened) * valves[node.valve as usize].flow)
+            .sum();
+
+        let next_valves = unvisited_non_broken_valves
+            .iter()
+            .permutations(current_nodes.len());
+
+        pressure_released
+            + next_valves
+                .map(|vs| {
+                    let mut next_nodes: Vec<Node> = Vec::new();
+                    for i in 0..vs.len() {
+                        let current_node = current_nodes[i];
+                        let next_valve = *vs[i];
+
+                        let added_time =
+                            times_tables[current_node.valve as usize][next_valve as usize] + 1;
+
+                        if added_time >= MAX_TRAVEL_TIME_FROM_ONE_VALVE_TO_ANOTHER {
+                            return 0;
+                        }
+
+                        let time_opened = current_node.time_opened + added_time;
+
+                        if time_opened < total_time {
+                            next_nodes.push(Node {
+                                valve: next_valve,
+                                time_opened,
+                            });
+                        }
+                    }
+                    if !next_nodes.is_empty() {
+                        best_score(
+                            total_time,
+                            &next_nodes,
+                            &unvisited_non_broken_valves
+                                .into_iter()
+                                .map(|e| *e)
+                                .filter(|v| !next_nodes.iter().any(|v2| *v == v2.valve))
+                                .collect_vec(),
+                            times_tables,
+                            valves,
+                        )
                     } else {
                         0
                     }
-                } else {
-                    0
-                }
-            })
-            .max()
-            .unwrap()
+                })
+                .max()
+                .unwrap_or(0)
     }
 
-    best_score(time, vec![start], &non_broken_valves, &times_tables, valves)
+    best_score(
+        time,
+        &(0..nb_people)
+            .map(|_| Node {
+                valve: start,
+                time_opened: 0,
+            })
+            .collect_vec(),
+        &non_broken_valves,
+        &times_tables,
+        &valves,
+    )
 }
 
 #[cfg(test)]
@@ -135,9 +179,12 @@ mod tests {
     #[test]
     fn part1() {
         let (start, valves) = parse(VALVES);
-        assert_eq!(most_pressure(start, 30, &valves), 1651);
+        assert_eq!(most_pressure(start, 30, 1, &valves), 1651);
     }
 
     #[test]
-    fn part2() {}
+    fn part2() {
+        let (start, valves) = parse(VALVES);
+        assert_eq!(most_pressure(start, 26, 2, &valves), 1707);
+    }
 }

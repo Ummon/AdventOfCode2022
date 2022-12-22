@@ -165,7 +165,7 @@ pub fn day16() -> String {
     let (start, valves) = day16::parse(&fs::read_to_string("data/day16.input").unwrap());
     format!(
         "part1: {}, part2: {}",
-        day16::most_pressure(start, 30, &valves),
-        0
+        day16::most_pressure(start, 30, 1, &valves),
+        day16::most_pressure(start, 26, 2, &valves)
     )
 }
