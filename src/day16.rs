@@ -54,24 +54,21 @@ pub fn parse(input: &str) -> (i32, Vec<Valve>) {
 }
 
 pub fn most_pressure(start: i32, time: i32, nb_people: i32, valves: &[Valve]) -> i32 {
-    // TODO: use Floyd-Warshall algorithm.
+    // Floyd-Warshall algorithm.
     let n = valves.len();
-    let mut times_tables = vec![vec![0; n]; n];
-    for i in 0..valves.len() {
-        let mut visited = vec![false; n];
-        let mut to_visit = Vec::new();
-        let mut next_to_visit = vec![i as i32];
-        let mut l = 0;
-        while !next_to_visit.is_empty() {
-            std::mem::swap(&mut to_visit, &mut next_to_visit);
-            while let Some(n) = to_visit.pop() {
-                if !visited[n as usize] {
-                    visited[n as usize] = true;
-                    times_tables[i as usize][n as usize] = l;
-                    next_to_visit.extend_from_slice(&valves[n as usize].neighbours)
-                }
+    let mut times_tables = vec![vec![i32::MAX / 2; n]; n];
+    for i in 0..n {
+        for j in 0..n {
+            if valves[i].neighbours.contains(&(j as i32)) {
+                times_tables[i][j] = 1;
             }
-            l += 1;
+        }
+    }
+    for k in 0..n {
+        for i in 0..n {
+            for j in 0..n {
+                times_tables[i][j] = times_tables[i][j].min(times_tables[i][k] + times_tables[k][j])
+            }
         }
     }
 
@@ -99,12 +96,10 @@ pub fn most_pressure(start: i32, time: i32, nb_people: i32, valves: &[Valve]) ->
             .map(|node| (total_time - node.time_opened) * valves[node.valve as usize].flow)
             .sum();
 
-        let next_valves = unvisited_non_broken_valves
-            .iter()
-            .permutations(current_nodes.len());
-
         pressure_released
-            + next_valves
+            + unvisited_non_broken_valves
+                .iter()
+                .permutations(current_nodes.len())
                 .map(|vs| {
                     let mut next_nodes: Vec<Node> = Vec::new();
                     for i in 0..vs.len() {
