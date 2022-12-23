@@ -172,5 +172,9 @@ pub fn day16() -> String {
 
 pub fn day17() -> String {
     let movements = day17::parse(&fs::read_to_string("data/day17.input").unwrap());
-    format!("part1: {}, part2: {}", day17::height(2022, &movements), 0)
+    format!(
+        "part1: {}, part2: {}",
+        day17::height(2022, &movements),
+        day17::height(1_000_000_000_000, &movements)
+    )
 }

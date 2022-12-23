@@ -17,7 +17,7 @@ pub fn parse(input: &str) -> Vec<Movement> {
         .collect()
 }
 
-fn rock_collide(pos: (i32, i32), rock: &[(i32, i32)], pile: &HashSet<(i32, i32)>) -> bool {
+fn rock_collide(pos: (i64, i64), rock: &[(i64, i64)], pile: &HashSet<(i64, i64)>) -> bool {
     for (x, y) in rock {
         let (x, y) = (x + pos.0, y + pos.1);
         if x <= 0 || x >= 8 || y <= 0 || pile.contains(&(x, y)) {
@@ -27,7 +27,20 @@ fn rock_collide(pos: (i32, i32), rock: &[(i32, i32)], pile: &HashSet<(i32, i32)>
     false
 }
 
-pub fn height(number_of_rocks: i32, movements: &[Movement]) -> i32 {
+#[derive(Debug)]
+struct State {
+    rock_type: usize,
+    x_position: i64,
+    highest_point: i64,
+}
+
+impl PartialEq for State {
+    fn eq(&self, other: &Self) -> bool {
+        self.rock_type == other.rock_type && self.x_position == other.x_position
+    }
+}
+
+pub fn height(number_of_rocks: i64, movements: &[Movement]) -> i64 {
     let types_of_rock = [
         vec![(0, 0), (1, 0), (2, 0), (3, 0)],         // '-'.
         vec![(0, 1), (1, 0), (1, 1), (1, 2), (2, 1)], // '+'.
@@ -36,29 +49,29 @@ pub fn height(number_of_rocks: i32, movements: &[Movement]) -> i32 {
         vec![(0, 0), (0, 1), (1, 0), (1, 1)],         // '□'.
     ];
 
-    let mut pile = HashSet::<(i32, i32)>::new();
+    let l = movements.len();
+    let mut move_states = Vec::<Option<State>>::new();
+    let mut pile = HashSet::<(i64, i64)>::new();
     let mut current_movement = 0;
     let mut highest_point = 0;
     for i in 0..number_of_rocks {
-        let rock = &types_of_rock[i as usize % types_of_rock.len()];
-
+        let rock_type = i as usize % types_of_rock.len();
+        let rock = &types_of_rock[rock_type];
         let mut pos = (3, highest_point + 4);
+
         loop {
             let m = &movements[current_movement];
             current_movement = (current_movement + 1) % movements.len();
-
-            //println!("Rock: {:?}, pos: {:?}, m: {:?}", rock, pos, m);
 
             let new_pos = match m {
                 Movement::Left => (pos.0 - 1, pos.1),
                 Movement::Right => (pos.0 + 1, pos.1),
             };
-
             if !rock_collide(new_pos, rock, &pile) {
                 pos = new_pos;
             }
-
             let new_pos = (pos.0, pos.1 - 1);
+
             if rock_collide(new_pos, rock, &pile) {
                 let mut h = 0;
                 for p in rock {
@@ -66,15 +79,52 @@ pub fn height(number_of_rocks: i32, movements: &[Movement]) -> i32 {
                     pile.insert((p.0 + pos.0, p.1 + pos.1));
                 }
 
-                // println!("Rock piled up: {:?}, pos: {:?}", rock, pos);
                 highest_point = highest_point.max(pos.1 + h);
-                break;
-            }
 
-            pos = new_pos
+                move_states.push(Some(State {
+                    rock_type,
+                    x_position: pos.0,
+                    highest_point,
+                }));
+
+                for k in 1..=move_states.len() / (2 * l) {
+                    let sequence_length = k * l;
+                    let sequence_start = move_states.len() - sequence_length;
+                    if let Some(Some(previous_first_of_sequence)) =
+                        move_states.get(sequence_start - 1)
+                    {
+                        if move_states[sequence_start..]
+                            == move_states[sequence_start - sequence_length
+                                ..move_states.len() - sequence_length]
+                        {
+                            let nb_stacked_rocks = move_states[sequence_start..]
+                                .iter()
+                                .fold(0, |sum, current| {
+                                    sum + if current.is_some() { 1 } else { 0 }
+                                });
+
+                            let nb_stacked_rocks_remaining = number_of_rocks % nb_stacked_rocks;
+
+                            return number_of_rocks / nb_stacked_rocks
+                                * (highest_point - previous_first_of_sequence.highest_point)
+                                + move_states
+                                    .iter()
+                                    .filter_map(|s| s.as_ref())
+                                    .take(nb_stacked_rocks_remaining as usize)
+                                    .last()
+                                    .unwrap()
+                                    .highest_point;
+                        }
+                    }
+                }
+
+                break;
+            } else {
+                pos = new_pos;
+                move_states.push(None);
+            }
         }
     }
-
     highest_point
 }
 
@@ -91,5 +141,8 @@ mod tests {
     }
 
     #[test]
-    fn part2() {}
+    fn part2() {
+        let movements = parse(JET_PATTERN);
+        assert_eq!(height(1_000_000_000_000, &movements), 1_514_285_714_288);
+    }
 }
