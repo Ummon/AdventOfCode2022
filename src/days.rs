@@ -181,5 +181,10 @@ pub fn day17() -> String {
 
 pub fn day18() -> String {
     let cubes = day18::parse(&fs::read_to_string("data/day18.input").unwrap());
-    format!("part1: {}, part2: {}", day18::surface(&cubes), 0)
+    let (surface, obsidian) = day18::surface(&cubes);
+    format!(
+        "part1: {}, part2: {}",
+        surface,
+        day18::surface_without_trapped_air(surface, obsidian)
+    )
 }
