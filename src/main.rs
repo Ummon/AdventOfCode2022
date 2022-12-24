@@ -20,6 +20,7 @@ mod day14;
 mod day15;
 mod day16;
 mod day17;
+mod day18;
 mod days;
 
 #[derive(Parser, Debug)]
@@ -53,6 +54,7 @@ fn main() {
         days::day15,
         days::day16,
         days::day17,
+        days::day18,
     ];
 
     let args = Args::parse();

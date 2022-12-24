@@ -178,3 +178,8 @@ pub fn day17() -> String {
         day17::height(1_000_000_000_000, &movements)
     )
 }
+
+pub fn day18() -> String {
+    let cubes = day18::parse(&fs::read_to_string("data/day18.input").unwrap());
+    format!("part1: {}, part2: {}", day18::surface(&cubes), 0)
+}
